@@ -1,8 +1,10 @@
-## Crear entorno de desarrollo para ASI174 + YOLO
-Crear entorno virtual de Python y activarlo:
+## Crear entorno de desarrollo para ASI174
+
+Configurar el proyecto usando Poetry:
+
 ```bash
-python3 -m venv asi_env
-source asi_env/bin/activate
+# Instalar dependencias
+poetry install
 ```
 
 ## Instalar SDK de ZWO
@@ -10,7 +12,7 @@ source asi_env/bin/activate
 ```bash
 uname -m
 ```
-2. Descargar SDK de ZWO e instalar la version acorde a tu arquitectura:
+2. Descargar SDK de ZWO e instalar la versión acorde a tu arquitectura:
 ```bash
 cd ~/tesis/zwo_camera_test
 wget -O ASI_Camera_SDK.zip "https://dl.zwoastro.com/software?app=DeveloperCameraSdk&platform=windows86&region=Overseas"
@@ -34,21 +36,18 @@ sudo cp ASI_Camera_SDK/lib/x64/libASICamera2.so /usr/local/lib/
 sudo ldconfig
 ```
 
-4. Agregar variable de entorno `ZWO_ASI_LIB` al entorno virtual permanente:
-```bash
-code ~/asi_env/bin/activate
-```
-Al final del script agregar
+4. Agregar variable de entorno `ZWO_ASI_LIB`:
+Puedes agregarla a tu archivo `.bashrc` o configurarla en la sesión:
 ```bash
 export ZWO_ASI_LIB=/usr/local/lib/libASICamera2.so
 ```
 
-5. Correccion udev (Depende del dispositivo PI/laptop):
-Ver si la camara es detectada:
+5. Corrección udev (Depende del dispositivo PI/laptop):
+Ver si la cámara es detectada:
 ```bash
 lsusb | grep -i zwo
 ```
-Correccion
+Corrección
 ```bash
 sudo tee /etc/udev/rules.d/99-zwo.rules << 'EOF'
 SUBSYSTEM=="usb", ATTR{idVendor}=="03c3", MODE="0666"
@@ -60,10 +59,8 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-
-6. Instalar dependencias de yolo y zwo:
+6. Ejecutar scripts:
 ```bash
-pip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install zwoasi opencv-python ultralytics numpy
-
+poetry run python check_camera_details_zwo.py
+poetry run python check_camera_view_zwo.py
+```
