@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
-import zwoasi as asi
 import os
+import sys
+
+# Auto-activar el entorno virtual si no se está usando
+venv_python = os.path.expanduser("~/asi_env/bin/python")
+if os.path.abspath(sys.executable) != os.path.abspath(venv_python):
+    os.execl(venv_python, venv_python, *sys.argv)
+
+import zwoasi as asi
 import cv2
 import numpy as np
 import time
 
 # ---------- INIT SDK ----------
-asi.init(os.environ["ZWO_ASI_LIB"])
+asi.init(os.environ.get("ZWO_ASI_LIB", "/usr/local/lib/libASICamera2.so"))
 
 n = asi.get_num_cameras()
 print("Cámaras detectadas:", n)
